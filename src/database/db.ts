@@ -1,16 +1,9 @@
 import { createConnection } from "typeorm";
 import { config } from "dotenv";
 import { resolve } from "path";
-import { Student } from "../entities/student.entities";
-import { Admin } from "../entities/admin.entities";
-import { Role } from "../entities/role.entities";
-import { Instructor } from "../entities/instructors.entities";
-import { Enrollment } from "../entities/enrollments.entities";
-import { Course } from "../entities/courses.entites";
-import { Major } from "../entities/major.entity";
-import { Grade } from "../entities/grades.entities";
 
 
+import path from 'path';
 config({ path: resolve(__dirname, "../../.env") });
 
 
@@ -22,7 +15,7 @@ createConnection({
     "password": process.env.DB_PASSWORD,
     "database": "university",
   
-    "entities": [Student, Admin, Role, Instructor, Enrollment, Course, Major, Grade],
+    entities: [path.join(__dirname, '..', 'entities', '*.ts')],
     "synchronize": true, 
 })
 .then(connection => {
