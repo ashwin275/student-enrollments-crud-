@@ -5,7 +5,7 @@ This is a simple CRUD (Create, Read, Update, Delete) application for managing st
 ## Technologies Used
 
 - PostgreSQL: A powerful, open-source relational database system.
-- TypeORM: An ORM that can run in NodeJS, Browser, Cordova, PhoneGap, Ionic, React Native, NativeScript, Expo, and Electron platforms.
+- TypeORM: An ORM that can run in NodeJS .
 - Express: A fast, unopinionated, minimalist web framework for Node.js.
 - Node.js: A JavaScript runtime built on Chrome's V8 JavaScript engine.
 
