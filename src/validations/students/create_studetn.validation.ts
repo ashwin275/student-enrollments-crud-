@@ -9,9 +9,9 @@ export const create_student_validation=()=>{
  ];
 }
 
-export const get_student_validation=()=>{
+export const student_id_validation=()=>{
    return[
       check("student_id").optional().isUUID().withMessage("student_id should be a valid UUID")
 
-   ]
+   ];
 }

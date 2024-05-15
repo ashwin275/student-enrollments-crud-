@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne } from 'typeorm';
 import { Student } from './student.entities';
-// import { Admin } from './admins.entities';
 import { Course } from './courses.entites';
 import { Admin } from './admin.entities';
 

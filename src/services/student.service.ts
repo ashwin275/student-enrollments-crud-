@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import { Student } from '../entities/student.entities';
 import { Like } from 'typeorm';
+import { getRepository } from 'typeorm';
 
 
 export const s_create_student = async(req:Request)=>{
@@ -51,7 +52,9 @@ export const s_search_students = async(req:Request) =>{
 
 
 export const s_delete_student = async(req:Request) =>{
+
     const student_id:any  = req.params.student_id;
+     
     if(student_id){
         const student = await Student.findOne({
             where:{
@@ -69,16 +72,29 @@ export const s_delete_student = async(req:Request) =>{
    
 }
 
-export const s_update_user = async(req:Request)=>{
 
-    const student_id:any  = req.params.student_id;
-    const{name,email,age,phone_no} = req.body;
-    if (!name || !email || !age || !phone_no){
-        return "data missing"
+export const s_update_user = async (req: Request) => {
+    const student_id = req.params.student_id;
+    const { name, email, age, phone_no } = req.body;
 
-    }else{
-        const x = Student.update({student_id:student_id},{name:name,email:email,age:age,phone_no:phone_no});
-        return x
+    try {
+        const studentRepository = getRepository(Student);
+        const student = await studentRepository.findOne({ where: { student_id: student_id } });
+
+        if (!student) {
+            return { status: 404, message: 'Student not found' };
+        }
+
+        if (name) student.name = name;
+        if (email) student.email = email;
+        if (age) student.age = age;
+        if (phone_no) student.phone_no = phone_no;
+
+        const updated_student = await studentRepository.save(student);
+
+        return { status: 200, data: updated_student };
+    } catch (error) {
+        console.error(error);
+        return { status: 500, message: 'Internal server error' };
     }
-
-}
+};

@@ -10,15 +10,24 @@ import { Course } from "../entities/courses.entites";
 import { Major } from "../entities/major.entity";
 import { Grade } from "../entities/grades.entities";
 
+
 config({ path: resolve(__dirname, "../../.env") });
-console.log(process.env.DB_USERNAME)
-export const db = createConnection({
+
+
+createConnection({
     "type": "postgres",
     "host": "localhost",
     "port": 5432,
     "username": process.env.DB_USERNAME,
     "password": process.env.DB_PASSWORD,
     "database": "university",
-    "entities": [Student,Admin,Role,Instructor,Enrollment,Course,Major,Grade],
-    "synchronize": true,
+  
+    "entities": [Student, Admin, Role, Instructor, Enrollment, Course, Major, Grade],
+    "synchronize": true, 
 })
+.then(connection => {
+    console.log("Database connection established successfully");
+})
+.catch(error => {
+    console.error("Error connecting to database:", error);
+});

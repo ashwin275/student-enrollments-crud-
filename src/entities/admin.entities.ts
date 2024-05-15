@@ -1,4 +1,4 @@
-// admin.entities.ts
+
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany,ManyToOne } from 'typeorm';
 
 import { Student } from './student.entities';
