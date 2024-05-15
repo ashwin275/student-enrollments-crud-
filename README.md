@@ -1,4 +1,4 @@
-# University CRUD Application
+#  CRUD Application
 
 This is a simple CRUD (Create, Read, Update, Delete) application for managing student data. It provides APIs for searching, adding, deleting, and updating student records.
 
