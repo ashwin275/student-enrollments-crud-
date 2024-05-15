@@ -18,7 +18,14 @@ This is a simple CRUD (Create, Read, Update, Delete) application for managing st
 
 ### Installation
 
-1. Clone the repository:
+1. **Clone the repository:**
 
    ```bash
-   git clone [https://github.com/ashwin275/university.git]
+   git clone https://github.com/ashwin275/university.git
+2. **Install the dependencies:**
+      ```bash
+      npm install
+      
+ 3. **Start  server:**
+      ```bash
+      npm run dev
