@@ -8,6 +8,7 @@ This is a simple CRUD (Create, Read, Update, Delete) application for managing st
 - TypeORM: An ORM that can run in NodeJS .
 - Express: A fast, unopinionated, minimalist web framework for Node.js.
 - Node.js: A JavaScript runtime built on Chrome's V8 JavaScript engine.
+- TypeScript: A strongly typed programming language that builds on JavaScript, giving you better tooling at any scale.
 
 ## Getting Started
 
