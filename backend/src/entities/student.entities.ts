@@ -5,6 +5,7 @@ import { Admin } from "./admin.entities";
 import { Enrollment } from "./enrollments.entities";
 import { Major } from "./major.entity";
 import { Grade } from "./grades.entities";
+import { Role } from "./role.entities";
 
 @Entity("students")
 export class Student extends BaseEntity  {
@@ -37,4 +38,8 @@ export class Student extends BaseEntity  {
 
     @OneToMany(()=>Grade,grade=>grade.student)
     grades!:Grade[];
+
+    @ManyToOne(() => Role, role => role.student, { nullable: false })
+    role!: Role;
+  
 }
