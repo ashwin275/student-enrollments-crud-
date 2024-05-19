@@ -15,6 +15,6 @@ if (!JWT_SECRET){
 
 export const generatetoken = (id:string,email:string,role:string):string => {
     return jwt.sign({id,email,role},JWT_SECRET,{
-        expiresIn:'1h'
+        expiresIn:'10h'
     });
 }

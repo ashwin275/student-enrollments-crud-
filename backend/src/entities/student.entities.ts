@@ -30,7 +30,7 @@ export class Student extends BaseEntity  {
     @OneToMany(()=>Major,major=>major.students)
     major!:Major
 
-    @ManyToOne(() => Admin, admin => admin.students)
+    @ManyToOne(() => Admin, admin => admin.students,{ nullable: false })
     admin!: Admin;
 
     @OneToMany(()=>Enrollment,enrollment => enrollment.student)

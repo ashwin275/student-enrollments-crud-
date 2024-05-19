@@ -1,20 +1,18 @@
 import { Request ,Response} from "express";
-import { getRepository } from "typeorm";
-import { Role } from "../entities/role.entities";
-import { isDuplicateKeyError } from "../utils/error.utils";
 
+import { isDuplicateKeyError } from "../utils/error.utils";
+import { RoleRepository } from "../repositories";
 export const s_create_roles = async (req: Request, res: Response) => {
     try {
         const { role_name, description } = req.body;
        
-        const roleRepository = getRepository(Role);
-
-        const newRole = roleRepository.create({
+        
+        const newRole = RoleRepository.create({
             role_name: role_name,
             description: description
         });
 
-        const savedRole = await roleRepository.save(newRole);
+        const savedRole = await RoleRepository.save(newRole);
 
         return res.status(201).json(savedRole);
     } catch (error) {
@@ -37,16 +35,15 @@ export const s_all_roles = async (req: Request, res: Response) => {
         const role_id: any = req.query.role_id;
         
 
-        const roleRepository = getRepository(Role);
         
         if (role_id) {
-            const role = await roleRepository.findOne({ where: { role_id: role_id } });
+            const role = await RoleRepository.findOne({ where: { role_id: role_id } });
             if (!role) {
                 return res.status(404).json({ error: "Role Not Found" });
             }
             return res.json([role]);
         } else {
-            const roles = await roleRepository.find();
+            const roles = await RoleRepository.find();
             return res.json(roles);
         }
     } catch (error) {

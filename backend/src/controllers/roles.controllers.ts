@@ -8,11 +8,11 @@ import { sendForbiddenResponse, sendInvalidDataResponse } from "../utils/respons
 export const create_roles = async(req:AuthenticatedRequest,res:Response) =>{
     const errors = validationResult(req)
     if(!isSuperAdmin(req.user)){
-        sendForbiddenResponse(res)
-        return
+        return sendForbiddenResponse(res)
+        
      }
     if (!errors.isEmpty()){
-        sendInvalidDataResponse(res,errors)
+        return sendInvalidDataResponse(res,errors)
    
     }else{
        
@@ -31,8 +31,8 @@ export const roles = async (req:Request,res:Response) =>{
   
     
     if (!error.isEmpty()){
-       sendInvalidDataResponse(res,error)
-       return
+       return sendInvalidDataResponse(res,error)
+       
     }else{
      
         const result = await s_all_roles(req,res);

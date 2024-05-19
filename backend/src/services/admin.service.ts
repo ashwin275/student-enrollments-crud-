@@ -1,24 +1,22 @@
 import { Request, Response } from "express";
-import { getRepository } from "typeorm";
-import { Admin } from "../entities/admin.entities";
+
 import { isDuplicateKeyError } from "../utils/error.utils";
 import * as bcrypt from 'bcrypt';
 import { generatetoken } from "../utils/jwt.utils";
-import { Role } from "../entities/role.entities";
-
+import { AdminRepository } from "../repositories";
 export const s_create_admin = async(req:Request,res:Response)=>{
     try{
         const {role_id,name,email,password} = req.body;
-        const roleRepository = getRepository(Admin);
+        
 
-        const admin = roleRepository.create({
+        const admin = AdminRepository.create({
             role: role_id,
             name: name,
             email:email,
             password:password
         });
 
-        const savedadmin = await roleRepository.save(admin)
+        const savedadmin = await AdminRepository.save(admin)
         const { password: _, ...response } = savedadmin;
         return res.status(201).json(response)
     }catch (error){
@@ -40,10 +38,9 @@ export const s_admin_signin = async(req:Request,res:Response) =>{
         console.log("inside admin")
         const {email,password} = req.body
 
-        const adminRepository = getRepository(Admin);
        
 
-        const admin = await adminRepository
+        const admin = await AdminRepository
             .createQueryBuilder("admin")
             .where("admin.email = :email", { email })
             .leftJoinAndSelect("admin.role", "role")
