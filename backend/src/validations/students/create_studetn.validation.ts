@@ -3,10 +3,16 @@ import { check,body ,query} from "express-validator"
 
 export const create_student_validation=()=>{
  return [
-   body("name")
-   .exists().withMessage("Name is required")
-   .isLength({ min: 5, max: 40 }).withMessage("Name should be between 5 to 40 characters"),
-   
+  body('name')
+  .exists().withMessage('Name is required')
+  .custom(value => {
+    if (typeof value !== 'string') {
+      throw new Error('Name should be a valid string');
+    }
+    return true;
+  })
+  .isLength({ min: 5, max: 40 }).withMessage('Name should be between 5 to 40 characters'),
+
  body("email")
    .exists().withMessage("Email is required")
    .isEmail().withMessage("Enter a valid email"),
@@ -36,11 +42,16 @@ export const student_update_validation =()=>{
 
     query("student_id").exists().isUUID().withMessage("student_id should be a valid UUID")
      
-    ,body("name")
+    ,body('name')
     .optional()
-    .isString()
-    .withMessage("Name must be a string")
-    .withMessage("Provide name"),
+    .custom(value => {
+      if (typeof value !== 'string') {
+        throw new Error('Name should be a valid string');
+      }
+      return true;
+    })
+    .isLength({ min: 5, max: 40 }).withMessage('Name should be between 5 to 40 characters'),
+  
 
     body("email")
     .optional()

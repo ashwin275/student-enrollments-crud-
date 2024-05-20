@@ -68,7 +68,7 @@ export const s_admin_signin = async(req:Request,res:Response) =>{
                 admin_id:admin.admin_id,
                 name:admin.name,
                 email:admin.email,
-                role_id :admin.role
+                role :admin.role.role_name
                 
             }
         });

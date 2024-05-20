@@ -7,4 +7,4 @@ export const roles_route = express.Router()
 
 
 roles_route.post("/create",jwtAuthMiddleware, create_role_validation(), create_roles)
-roles_route.get("/", jwtAuthMiddleware, role_id_validation(),roles)
+roles_route.get("/", role_id_validation(),roles)

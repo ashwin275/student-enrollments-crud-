@@ -2,6 +2,10 @@ import { Request ,Response} from "express";
 
 import { isDuplicateKeyError } from "../utils/error.utils";
 import { RoleRepository } from "../repositories";
+import { Not } from 'typeorm';
+
+
+
 export const s_create_roles = async (req: Request, res: Response) => {
     try {
         const { role_name, description } = req.body;
@@ -43,7 +47,10 @@ export const s_all_roles = async (req: Request, res: Response) => {
             }
             return res.json([role]);
         } else {
-            const roles = await RoleRepository.find();
+
+
+            const roles = await RoleRepository.find({ where: { role_name: Not("super_admin") } });
+            console.log("roles",roles)
             return res.json(roles);
         }
     } catch (error) {

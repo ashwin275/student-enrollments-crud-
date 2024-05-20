@@ -6,13 +6,14 @@ import { roles_route } from "./routes/roles.routes";
 
 
 const app = express();
-
+const cors = require('cors');
+app.use(cors());
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use("/api/v1/student",students_route)
 app.use("/api/v1/admin",admin_route)
 app.use("/api/v1/roles",roles_route)
 
-app.listen(3000,()=>{
-    console.log(`app running on port 3000`)
+app.listen(3002,()=>{
+    console.log(`app running on port 3002`)
 })

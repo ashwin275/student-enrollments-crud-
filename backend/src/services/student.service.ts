@@ -3,34 +3,39 @@ import { Student } from '../entities/student.entities';
 import { Like } from 'typeorm';
 import { getRepository } from 'typeorm';
 import { isDuplicateKeyError } from '../utils/error.utils';
-import { StudentRepository } from '../repositories';
+
 import { UUID } from 'crypto';
 import { error } from 'console';
+import { AuthenticatedRequest } from '../interface/authenticated.request';
+import { isSuperAdmin } from '../utils/auth.utils';
+import { adminStudentRelation } from '../utils/relations.utils';
+import { sendForbiddenResponse } from '../utils/response.utils';
 
-export const s_create_student = async(req:Request,res:Response)=>{
 
-    try{
+export const s_create_student = async (req: Request, res: Response) => {
 
-  
-        const{email,name,age,phone_no,dob,role_id,admin_id} = req.body;
+    try {
+
+
+        const { email, name, age, phone_no, dob, role_id, admin_id } = req.body;
 
         const new_student = await Student.save({
-           
-            email:email,
-            name:name,
-            age:age,
-            phone_no:phone_no,
-            dob:dob,
-            role:role_id,
-            admin:admin_id
+
+            email: email,
+            name: name,
+            age: age,
+            phone_no: phone_no,
+            dob: dob,
+            role: role_id,
+            admin: admin_id
         })
         return res.status(201).json(new_student)
-    } catch(error){
+    } catch (error) {
         if (isDuplicateKeyError(error)) {
 
             return res.status(400).json({ error: true, message: "Student already exists" });
-        } 
-        
+        }
+
         else if (error instanceof Error) {
             res.status(400).json({ error: true, message: error.message || "Student not created" });
         } else {
@@ -40,30 +45,30 @@ export const s_create_student = async(req:Request,res:Response)=>{
 }
 
 
-export const s_all_students = async (req: Request,res:Response) => {
-    const student_id:any  = req.query.student_id;
-    
+export const s_all_students = async (req: Request, res: Response) => {
+    const student_id: any = req.query.student_id;
+
     if (student_id) {
-        try{
+        try {
             const student = await Student.findOne({ where: { student_id: student_id } });
-             if (!student) {
+            if (!student) {
                 return res.status(404).json({ error: "Student Not Found" });
             }
             return res.status(201).json(student)
-        } catch (error){
+        } catch (error) {
             console.error("Error:", error);
             return res.status(500).json({ error: "Internal Server Error" });
         }
     }
-    const all_students =  await Student.find();
-  
+    const all_students = await Student.find();
+
     return res.status(200).json(all_students)
 }
 
 export const s_search_students = async (req: Request, res: Response) => {
     const { name, email } = req.query;
 
-  
+
     if (name || email) {
         let students;
 
@@ -89,54 +94,66 @@ export const s_search_students = async (req: Request, res: Response) => {
     }
 };
 
-export const s_delete_student = async(req:Request,res:Response) =>{
+export const s_delete_student = async (req: AuthenticatedRequest, res: Response) => {
 
-    const  student_id  = req.query.student_id as UUID;
-     
-    if(student_id){
+    const student_id = req.query.student_id as UUID;
+
+    if (student_id) {
         const student = await Student.findOne({
-            where:{
-                student_id:student_id
-            }
+            where: {
+                student_id: student_id
+            },
+            relations: ["admin"]
         });
-        if(student){
-          await Student.remove(student)
-          return res.status(200).json({
-            data: student,
-            message: `Successfully updated student with email: ${student.email}`
-          })
-        }else{
-            return res.status(404).json({error:true,message:"student not found"})
+        if (student) {
+            if (!isSuperAdmin(req.user) && !adminStudentRelation(req.user, student.admin.admin_id)) {
+                return sendForbiddenResponse(res)
+            }
+
+            await Student.remove(student)
+            return res.status(200).json({
+                data: student,
+                message: `Successfully updated student with email: ${student.email}`
+            })
+        } else {
+            return res.status(404).json({ error: true, message: "student not found" })
         }
-    }else{
-        return res.status(400).json({error:true,message:"student id required"})
+    } else {
+        return res.status(400).json({ error: true, message: "student id required" })
     }
 
-   
+
 }
 
-export const s_update_user = async (req: Request, res: Response) => {
-    const  student_id  = req.query.student_id as UUID;
-    const { name, email, age, phone_no } = req.body;
 
+export const s_update_user = async (req: AuthenticatedRequest, res: Response) => {
+    const student_id = req.query.student_id as UUID;
+    const { name, email, age, phone_no, dob } = req.body;
 
     try {
         const studentRepository = getRepository(Student);
-        const student = await studentRepository.findOne({ where: { student_id: student_id } });
+        const student = await studentRepository.findOne({ where: { student_id: student_id }, relations: ["admin"] });
 
         if (!student) {
             return res.status(404).json({ message: "student not found" });
+        }
+        if (!isSuperAdmin(req.user) && !adminStudentRelation(req.user, student.admin.admin_id)) {
+            return sendForbiddenResponse(res);
         }
 
         if (name) student.name = name;
         if (email) student.email = email;
         if (age) student.age = age;
         if (phone_no) student.phone_no = phone_no;
+        if (dob) student.dob = dob;
+
+       
+        const { admin, ...studentData } = student;
 
         const updated_student = await studentRepository.save(student);
 
         return res.status(200).json({
-            data: updated_student,
+            data: studentData, // Only student data is sent in the response
             message: `Successfully updated student with email: ${updated_student.email}`
         });
 

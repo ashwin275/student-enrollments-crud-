@@ -4,7 +4,7 @@ import { validationResult,Result,ValidationError } from 'express-validator';
 export const sendForbiddenResponse = (res:Response) => {
     return res.status(403).json({
         error: true,
-        message: "User is not authorized to access this resource"
+        message: "User is not authorized to access this operation"
     });
 };
 
